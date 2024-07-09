@@ -1,15 +1,15 @@
 import React from 'react';
-import { MedicationOrder, Time } from 'nurse-o-core';
+import type { MedicationOrder, Time } from "@nurse-o-core/index";
 import MedicationOrderSyntax from '../Orders/MedicationOrderSyntax';
 import { Button } from '../Form/Button';
 import { HoldModal } from './HoldModal';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 type Props = {
     order: MedicationOrder,
     timeSlots: number[],
     simTime: Time,
-    onUpdate: (order: MedicationOrder) => void
+    onHold: (order: MedicationOrder) => void
 }
 
 type State = {
@@ -42,8 +42,8 @@ export default class MarEntry extends React.Component<Props, State> {
 
     checkForRecordedMarData() {
         for (const record of this.props.order.mar) {
-            const { hour, minutes, dose } = record;
-            this.timeSlots.set(hour, <span>{hour.toString().padStart(2, "0")}:{minutes.toString().padStart(2, "0")} <br /> {dose} </span>)
+            const { hour, minute, dose } = record;
+            this.timeSlots.set(hour, <span>{hour.toString().padStart(2, "0")}:{minute.toString().padStart(2, "0")} <br /> {dose} </span>)
         }
     }
 
@@ -63,23 +63,23 @@ export default class MarEntry extends React.Component<Props, State> {
 
     }
 
-    onHoldReasonSubmittedHandler(holdReason: string) {
+    onHoldReasonSubmittedHandler(holdReason: string | null) {
         const order = this.props.order
         order.holdReason = holdReason
-        this.props.onUpdate(order)
+        this.props.onHold(order)
         this.setState({ holdClicked: false })
     }
 
     public render() {
         if (this.props.order.holdReason && this.props.order.holdReason.length > 0) return (
-            <tr className='bg-red-700/70 h-32 border border-white text-white font-semibold'>
+            <tr className='bg-primary/70 h-32 border border-white text-white font-semibold'>
                 <td className={`w-80 pl-16 font-semibold
                                     ${this.props.order.completed ? "line-through" : null}`}>
                     <MedicationOrderSyntax order={this.props.order} />
                 </td>
                 <td><Button title='release this medication'
-                    className='rounded-lg m-auto bg-gray-700'
-                    onClick={() => this.onHoldReasonSubmittedHandler("")}
+                    className='rounded-lg m-auto bg-grayBackground'
+                    onClick={() => this.onHoldReasonSubmittedHandler(null)}
                 >Release</Button></td>
                 <td></td>
                 <td colSpan={this.props.timeSlots.length}
@@ -93,7 +93,7 @@ export default class MarEntry extends React.Component<Props, State> {
         return (
             <tr className={`odd:bg-gray-100 even:bg-gray-300 h-32 relative
                 ${this.props.order.completed ? `
-                after:bg-green-700 after:opacity-30 after:h-full after:w-full 
+                after:bg-secondary after:opacity-30 after:h-full after:w-full 
                 after:absolute after:inset-0 after:border-2 after:content-['Completed'] after:text-center 
                 after:items-center after:grid after:font-bold after:text-5xl after:z-10` : null}
             `}>
@@ -101,7 +101,7 @@ export default class MarEntry extends React.Component<Props, State> {
 
                 <td className={`w-80 pl-16 font-semibold relative
                                 ${this.props.order.completed ? "line-through" : null}`}>
-                    <Link to={"/studentView/mar/administer"}>
+                    <Link href={"/StudentView/Mar/administer"}>
                         <MedicationOrderSyntax order={this.props.order} />
                     </Link>
                 </td>
@@ -115,9 +115,9 @@ export default class MarEntry extends React.Component<Props, State> {
                         </td>
 
                         <td className='w-32'>
-                            <Link to={"/studentView/mar/administer"}>
+                            <Link href={"/StudentView/Mar/administer"}>
                                 <Button 
-                                className='rounded-lg m-auto bg-green-700 mx-2'>Administer</Button>
+                                className='rounded-lg m-auto bg-secondary mx-2'>Administer</Button>
                             </Link>
                         </td>
                     </>

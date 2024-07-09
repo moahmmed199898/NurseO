@@ -1,19 +1,8 @@
 {
     "cSpell.words": [
-        "compat",
-        "craco",
-        "Hypoactive",
-        "medicalorders",
         "Meds",
+        "narcoti",
         "NKDA",
-        "nurseo",
-        "savvywombat",
-        "semibold",
-        "simpleemr",
-        "simplesim",
-        "Spirometry",
-        "splitted",
-        "tailwindcss",
-        "timeslot"
+        "orderid"
     ]
 }
